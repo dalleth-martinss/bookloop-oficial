@@ -1,15 +1,23 @@
 package com.bookloop.bookloop.services;
 
+import com.bookloop.bookloop.entities.User;
 import com.bookloop.bookloop.interfaces.IUserService;
+import com.bookloop.bookloop.repositories.IUserRepository;
+import com.bookloop.bookloop.controllers.request.UserRequestDTO;
+import com.bookloop.bookloop.controllers.response.UserResponseDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserServiceImpl implements IUserService {
+import java.util.List;
+import java.util.stream.Collectors;
 
-    private final UserRepository userRepository;
+@Service
+public class UserService implements IUserService {
+
+    private final IUserRepository userRepository;
     private final ModelMapper modelMapper;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserService(IUserRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
     }

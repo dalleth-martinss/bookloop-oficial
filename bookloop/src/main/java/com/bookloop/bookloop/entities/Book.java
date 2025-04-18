@@ -1,11 +1,13 @@
 package com.bookloop.bookloop.entities;
 
+import com.bookloop.bookloop.enums.ConditionStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "book")
@@ -13,7 +15,8 @@ import java.util.List;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Renomeado de book_id para seguir convenção
+    @Column(name = "id", columnDefinition = "BIGINT")
+    private Long id;
 
     @Column(name = "title", length = 255, nullable = false)
     private String title;
@@ -27,13 +30,13 @@ public class Book {
     @Column(name = "category", length = 45)
     private String category;
 
-    @Column(name = "condition", length = 45)
-    private String condition;
+    @Column(name = "book_condition", length = 45)
+    private ConditionStatus condition;
 
-    @Column(name = "observations", length = 255)
+    @Column(name = "book_observations", length = 255)
     private String observations;
 
-    @Column(name = "book_cover", length = 255) // Renomeado para snake_case
+    @Column(name = "book_cover", length = 255)
     private String bookCover;
 
     @Column(name = "available_for_trade")
@@ -52,15 +55,20 @@ public class Book {
     private List<CartItem> cartItems = new ArrayList<>();
 
     // Correção do relacionamento com WishList
-    @ManyToMany(mappedBy = "books")
-    private List<WishList> wishlists = new ArrayList<>();
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookWishlist> bookWishlists = new ArrayList<>();
 
     // Correção do relacionamento com Order
-    @ManyToMany
-    @JoinTable(
-            name = "order_book",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id")
-    )
-    private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderBook> orderBooks = new ArrayList<>();
+
+    // Método de conveniência para acessar as wishlists
+    public List<WishList> getWishlists() {
+        return bookWishlists.stream().map(BookWishlist::getWishlist).collect(Collectors.toList());
+    }
+
+    // Método de conveniência para acessar os pedidos
+    public List<Order> getOrders() {
+        return orderBooks.stream().map(OrderBook::getOrder).collect(Collectors.toList());
+    }
 }

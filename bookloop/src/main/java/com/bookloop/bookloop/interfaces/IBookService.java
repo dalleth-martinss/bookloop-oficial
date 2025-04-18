@@ -1,7 +1,7 @@
 package com.bookloop.bookloop.interfaces;
 
-import com.bookloop.bookloop.request.BookRequestDTO;
-import com.bookloop.bookloop.response.BookResponseDTO;
+import com.bookloop.bookloop.controllers.request.BookRequestDTO;
+import com.bookloop.bookloop.controllers.response.BookResponseDTO;
 
 import java.util.List;
 

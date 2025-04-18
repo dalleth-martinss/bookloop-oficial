@@ -1,7 +1,13 @@
-package com.bookloop.bookloop.request;
+package com.bookloop.bookloop.controllers.request;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 public class UserRequestDTO {
     private String cpf;
     private String fullName;

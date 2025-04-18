@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "id", columnDefinition = "BIGINT")
+    private Long id;
 
     @Column(name = "amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal amount;
@@ -38,6 +39,6 @@ public class Payment {
 
     // Relacionamento com Order (um pagamento está associado a um pedido)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false, columnDefinition = "BIGINT")
     private Order order;
 }

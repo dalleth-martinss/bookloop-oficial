@@ -7,14 +7,16 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 @Data
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "id", columnDefinition = "BIGINT")
+    private Long id;
 
     @Column(name = "total_amount", precision = 10, scale = 2)
     private BigDecimal totalAmount;
@@ -25,16 +27,29 @@ public class Order {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    // relacionamento com User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // relacionamento com Book
-    @ManyToMany(mappedBy = "orders")
-    private List<Book> books = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderBook> orderBooks = new ArrayList<>();
 
-    // Adicionado relacionamento com Payment
+    public List<Book> getBooks() {
+        return orderBooks.stream().map(OrderBook::getBook).collect(Collectors.toList());
+    }
+
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;
+
+    public void addBook(Book book) {
+        OrderBook orderBook = new OrderBook();
+        orderBook.setOrder(this);
+        orderBook.setBook(book);
+        orderBooks.add(orderBook);
+    }
+    public void removeBook(Book book) {
+        orderBooks.removeIf(orderBook -> orderBook.getBook().equals(book));
+    }
+
 }
+

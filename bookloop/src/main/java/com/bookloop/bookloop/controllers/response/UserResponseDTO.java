@@ -1,4 +1,4 @@
-package com.bookloop.bookloop.response;
+package com.bookloop.bookloop.controllers.response;
 
 public class UserResponseDTO {
     private Long id;

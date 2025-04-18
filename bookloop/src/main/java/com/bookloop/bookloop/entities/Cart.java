@@ -12,12 +12,12 @@ import java.util.List;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Renomeado de cart_id para seguir convenção
+    @Column(name = "id", columnDefinition = "BIGINT")
+    private Long id;
 
     @Column(name = "create_time", nullable = false)
     private LocalDateTime createTime;
 
-    // Corrigido o relacionamento com User (removida a coluna redundante)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

@@ -1,9 +1,8 @@
 package com.bookloop.bookloop.controllers;
 
-import com.bookloop.bookloop.BookService;
 import com.bookloop.bookloop.interfaces.IBookService;
-import com.bookloop.bookloop.request.BookRequestDTO;
-import com.bookloop.bookloop.response.BookResponseDTO;
+import com.bookloop.bookloop.controllers.request.BookRequestDTO;
+import com.bookloop.bookloop.controllers.response.BookResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,12 +1,13 @@
-package com.bookloop.bookloop.request;
+package com.bookloop.bookloop.controllers.response;
 
 import java.math.BigDecimal;
 
-public class BookRequestDTO {
+public class BookResponseDTO {
+    private Long id;
     private String titulo;
     private String autor;
     private String descricao;
     private BigDecimal preco;
     private String estado;
-    private Long userId;
+    private String nomeDono;
 }

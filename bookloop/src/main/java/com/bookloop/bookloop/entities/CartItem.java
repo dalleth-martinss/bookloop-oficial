@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", columnDefinition = "BIGINT")
     private Long id;
 
     @Column(name = "create_time", nullable = false)
@@ -18,12 +19,12 @@ public class CartItem {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
-    @ManyToOne(fetch = FetchType.LAZY)
 
-    @JoinColumn(name = "cart_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false, columnDefinition = "BIGINT")
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_id", nullable = false, columnDefinition = "BIGINT")
     private Book book;
 }
