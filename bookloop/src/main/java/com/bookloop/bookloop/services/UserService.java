@@ -1,6 +1,7 @@
 package com.bookloop.bookloop.services;
 
 import com.bookloop.bookloop.controllers.request.UserRequestDTO;
+import com.bookloop.bookloop.controllers.request.UserUpdateDTO;
 import com.bookloop.bookloop.controllers.response.UserResponseDTO;
 import com.bookloop.bookloop.entities.User;
 import com.bookloop.bookloop.repositories.IUserRepository;
@@ -41,7 +42,7 @@ public class UserService {
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword()); // Considere adicionar criptografia de senha
-        user.setRole(dto.getRole());
+
 
         // Salvar no repositório
         User savedUser = userRepository.save(user);
@@ -90,7 +91,7 @@ public class UserService {
         user.setGender(dto.getGender());
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setEmail(dto.getEmail());
-        user.setRole(dto.getRole());
+
 
         // Atualizar senha apenas se fornecida
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
@@ -101,6 +102,35 @@ public class UserService {
         User updatedUser = userRepository.save(user);
 
         // Converter para DTO de resposta
+        return convertToResponseDTO(updatedUser);
+    }
+    //****************************** Add a new updateUser method for UserUpdateDTO
+    public UserResponseDTO updateUser(Long id, UserUpdateDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        // Verificar se o email já está em uso por outro usuário
+        userRepository.findByEmail(dto.getEmail())
+                .ifPresent(existingUser -> {
+                    if (!existingUser.getId().equals(id)) {
+                        throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já registrado");
+                    }
+                });
+
+        // Atualizar dados (excluindo cpf)
+        user.setFullName(dto.getFullName());
+        user.setBirthdate(dto.getBirthdate());
+        user.setGender(dto.getGender());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setEmail(dto.getEmail());
+
+        // Atualizar senha apenas se fornecida
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            user.setPassword(dto.getPassword());
+        }
+
+        // Salvar no repositório
+        User updatedUser = userRepository.save(user);
         return convertToResponseDTO(updatedUser);
     }
 
@@ -118,7 +148,7 @@ public class UserService {
         responseDTO.setFullName(user.getFullName());
         responseDTO.setEmail(user.getEmail());
         responseDTO.setPhoneNumber(user.getPhoneNumber());
-        responseDTO.setRole(user.getRole());
+
         return responseDTO;
     }
 }

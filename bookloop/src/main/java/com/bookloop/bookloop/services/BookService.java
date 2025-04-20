@@ -32,13 +32,7 @@ public class BookService {
         book.setAvailableForSale(true);
         book.setAvailableForTrade(false);
 
-        if (dto.getUserId() != null) {
-            User user = new User();
-            user.setId(dto.getUserId());
-            book.setUser(user);
-        }
-
-        Book saved = bookRepository.save(book);
+         Book saved = bookRepository.save(book);
         return toDTO(saved);
     }
 
@@ -64,12 +58,6 @@ public class BookService {
         book.setSynopsis(dto.getDescricao());
         book.setPrice(dto.getPreco());
         book.setCondition(ConditionStatus.valueOf(dto.getEstado().toUpperCase()));
-
-        if (dto.getUserId() != null) {
-            User user = new User();
-            user.setId(dto.getUserId());
-            book.setUser(user);
-        }
 
         Book updated = bookRepository.save(book);
         return toDTO(updated);

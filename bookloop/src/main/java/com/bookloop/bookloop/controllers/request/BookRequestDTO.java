@@ -25,6 +25,5 @@ public class BookRequestDTO {
     @NotBlank(message = "O estado é obrigatório")
     private String estado;
 
-    private Long userId;
 }
 

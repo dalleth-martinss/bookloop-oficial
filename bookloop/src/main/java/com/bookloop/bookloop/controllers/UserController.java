@@ -1,8 +1,10 @@
 package com.bookloop.bookloop.controllers;
 
 import com.bookloop.bookloop.controllers.request.UserRequestDTO;
+import com.bookloop.bookloop.controllers.request.UserUpdateDTO;
 import com.bookloop.bookloop.controllers.response.UserResponseDTO;
 import com.bookloop.bookloop.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +36,8 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @RequestBody UserRequestDTO dto) {
+   @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
         return ResponseEntity.ok(userService.updateUser(id, dto));
     }
 
