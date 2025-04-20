@@ -1,7 +1,12 @@
 package com.bookloop.bookloop.controllers.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 
+@Setter
+@Getter
 public class BookResponseDTO {
     private Long id;
     private String titulo;

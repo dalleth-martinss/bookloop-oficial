@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IOrderRepository extends JpaRepository<Order, Integer> {
-
-    // Exemplo de filtro futuro:
-    List<Order> findByUserId(Long userId);
+public interface IOrderRepository extends JpaRepository<Order, Long> {
+       List<Order> findByUserId(Long userId);
 }

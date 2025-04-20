@@ -11,5 +11,6 @@ public interface IBookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByUserId(Long userId);
     List<Book> findByTitleContainingIgnoreCase(String title);
+    List<Book> findByAutorContainingIgnoreCase(String autor);
 
 }

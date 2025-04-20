@@ -1,60 +1,124 @@
 package com.bookloop.bookloop.services;
 
-import com.bookloop.bookloop.entities.User;
-import com.bookloop.bookloop.interfaces.IUserService;
-import com.bookloop.bookloop.repositories.IUserRepository;
 import com.bookloop.bookloop.controllers.request.UserRequestDTO;
 import com.bookloop.bookloop.controllers.response.UserResponseDTO;
-import org.modelmapper.ModelMapper;
+import com.bookloop.bookloop.entities.User;
+import com.bookloop.bookloop.repositories.IUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements IUserService {
+public class UserService {
 
     private final IUserRepository userRepository;
-    private final ModelMapper modelMapper;
 
-    public UserService(IUserRepository userRepository, ModelMapper modelMapper) {
+    @Autowired
+    public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
     }
 
-    @Override
     public UserResponseDTO createUser(UserRequestDTO dto) {
-        User user = modelMapper.map(dto, User.class);
-        user = userRepository.save(user);
-        return modelMapper.map(user, UserResponseDTO.class);
+        // Verificar se já existe usuário com mesmo email ou CPF
+        userRepository.findByEmail(dto.getEmail()).ifPresent(user -> {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já registrado");
+        });
+
+        userRepository.findByCpf(dto.getCpf()).ifPresent(user -> {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já registrado");
+        });
+
+        // Criar nova entidade User
+        User user = new User();
+        user.setCpf(dto.getCpf());
+        user.setFullName(dto.getFullName());
+        user.setBirthdate(dto.getBirthdate());
+        user.setGender(dto.getGender());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword()); // Considere adicionar criptografia de senha
+        user.setRole(dto.getRole());
+
+        // Salvar no repositório
+        User savedUser = userRepository.save(user);
+
+        // Converter para DTO de resposta
+        return convertToResponseDTO(savedUser);
     }
 
-    @Override
     public UserResponseDTO getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(user -> modelMapper.map(user, UserResponseDTO.class))
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        return convertToResponseDTO(user);
     }
 
-    @Override
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(user -> modelMapper.map(user, UserResponseDTO.class))
+                .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        modelMapper.map(dto, user);
-        user = userRepository.save(user);
-        return modelMapper.map(user, UserResponseDTO.class);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        // Verificar se o email já está em uso por outro usuário
+        userRepository.findByEmail(dto.getEmail())
+                .ifPresent(existingUser -> {
+                    if (!existingUser.getId().equals(id)) {
+                        throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já registrado");
+                    }
+                });
+
+        // Verificar se o CPF já está em uso por outro usuário
+        userRepository.findByCpf(dto.getCpf())
+                .ifPresent(existingUser -> {
+                    if (!existingUser.getId().equals(id)) {
+                        throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já registrado");
+                    }
+                });
+
+        // Atualizar dados
+        user.setCpf(dto.getCpf());
+        user.setFullName(dto.getFullName());
+        user.setBirthdate(dto.getBirthdate());
+        user.setGender(dto.getGender());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setEmail(dto.getEmail());
+        user.setRole(dto.getRole());
+
+        // Atualizar senha apenas se fornecida
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            user.setPassword(dto.getPassword()); // Considere adicionar criptografia de senha
+        }
+
+        // Salvar no repositório
+        User updatedUser = userRepository.save(user);
+
+        // Converter para DTO de resposta
+        return convertToResponseDTO(updatedUser);
     }
 
-    @Override
     public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        }
+
         userRepository.deleteById(id);
     }
-}
 
+    private UserResponseDTO convertToResponseDTO(User user) {
+        UserResponseDTO responseDTO = new UserResponseDTO();
+        responseDTO.setId(user.getId());
+        responseDTO.setFullName(user.getFullName());
+        responseDTO.setEmail(user.getEmail());
+        responseDTO.setPhoneNumber(user.getPhoneNumber());
+        responseDTO.setRole(user.getRole());
+        return responseDTO;
+    }
+}

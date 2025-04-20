@@ -1,67 +1,95 @@
 package com.bookloop.bookloop.services;
 
-import com.bookloop.bookloop.entities.Book;
-import com.bookloop.bookloop.entities.User;
-import com.bookloop.bookloop.interfaces.IBookService;
-import com.bookloop.bookloop.repositories.IBookRepository;
-import com.bookloop.bookloop.repositories.IUserRepository;
 import com.bookloop.bookloop.controllers.request.BookRequestDTO;
 import com.bookloop.bookloop.controllers.response.BookResponseDTO;
-import org.modelmapper.ModelMapper;
+import com.bookloop.bookloop.entities.Book;
+import com.bookloop.bookloop.entities.User;
+import com.bookloop.bookloop.enums.ConditionStatus;
+import com.bookloop.bookloop.repositories.IBookRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BookService implements IBookService {
+public class BookService {
 
     private final IBookRepository bookRepository;
-    private final IUserRepository userRepository;
-    private final ModelMapper modelMapper;
 
-    public BookService(IBookRepository bookRepository, IUserRepository userRepository
-                      , ModelMapper modelMapper) {
+    public BookService(IBookRepository bookRepository) {
         this.bookRepository = bookRepository;
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
     }
 
-    @Override
     public BookResponseDTO createBook(BookRequestDTO dto) {
-        Book book = modelMapper.map(dto, Book.class);
-        User user = userRepository.findById(dto.getUserId() )
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        book.setUser(user);
-        return modelMapper.map(bookRepository.save(book), BookResponseDTO.class);
+        Book book = new Book();
+        book.setTitle(dto.getTitulo());
+        book.setAutor(dto.getAutor());
+        book.setSynopsis(dto.getDescricao());
+        book.setPrice(dto.getPreco());
+        book.setCategory("Geral"); // valor padrão
+        book.setCondition(ConditionStatus.valueOf(dto.getEstado().toUpperCase()));
+        book.setAvailableForSale(true);
+        book.setAvailableForTrade(false);
+
+        if (dto.getUserId() != null) {
+            User user = new User();
+            user.setId(dto.getUserId());
+            book.setUser(user);
+        }
+
+        Book saved = bookRepository.save(book);
+        return toDTO(saved);
     }
 
-    @Override
     public BookResponseDTO getBookById(Long id) {
-        return bookRepository.findById(id)
-                .map(book -> modelMapper.map(book, BookResponseDTO.class))
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
+        return toDTO(book);
     }
 
-    @Override
     public List<BookResponseDTO> getAllBooks() {
         return bookRepository.findAll()
                 .stream()
-                .map(book -> modelMapper.map(book, BookResponseDTO.class))
+                .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    @Override
     public BookResponseDTO updateBook(Long id, BookRequestDTO dto) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
-        modelMapper.map(dto, book);
-        return modelMapper.map(bookRepository.save(book), BookResponseDTO.class);
+                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
+
+        book.setTitle(dto.getTitulo());
+        book.setAutor(dto.getAutor());
+        book.setSynopsis(dto.getDescricao());
+        book.setPrice(dto.getPreco());
+        book.setCondition(ConditionStatus.valueOf(dto.getEstado().toUpperCase()));
+
+        if (dto.getUserId() != null) {
+            User user = new User();
+            user.setId(dto.getUserId());
+            book.setUser(user);
+        }
+
+        Book updated = bookRepository.save(book);
+        return toDTO(updated);
     }
 
-    @Override
     public void deleteBook(Long id) {
-        bookRepository.deleteById(id);
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
+        bookRepository.delete(book);
+    }
+
+    private BookResponseDTO toDTO(Book book) {
+        BookResponseDTO dto = new BookResponseDTO();
+        dto.setId(book.getId());
+        dto.setTitulo(book.getTitle());
+        dto.setAutor(book.getAutor());
+        dto.setDescricao(book.getSynopsis());
+        dto.setPreco(book.getPrice());
+        dto.setEstado(book.getCondition().toString());
+        dto.setNomeDono(book.getUser() != null ? book.getUser().getFullName() : null);
+        return dto;
     }
 }
-

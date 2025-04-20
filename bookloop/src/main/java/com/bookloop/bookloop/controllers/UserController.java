@@ -1,8 +1,8 @@
 package com.bookloop.bookloop.controllers;
 
-import com.bookloop.bookloop.interfaces.IUserService;
 import com.bookloop.bookloop.controllers.request.UserRequestDTO;
 import com.bookloop.bookloop.controllers.response.UserResponseDTO;
+import com.bookloop.bookloop.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,9 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final IUserService userService;
+    private final UserService userService;
 
-    public UserController(IUserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -45,4 +45,3 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 }
-
