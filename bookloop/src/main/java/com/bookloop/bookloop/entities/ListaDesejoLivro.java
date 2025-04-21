@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "book_wishlist")
+@Table(name = "lista_desejo_livro")
 @Data
-public class BookWishlist {
+public class ListaDesejoLivro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "BIGINT")
@@ -14,9 +14,9 @@ public class BookWishlist {
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false, columnDefinition = "BIGINT")
-    private Book book;
+    private Livro livro;
 
     @ManyToOne
-    @JoinColumn(name = "wishlist_id", nullable = false, columnDefinition = "BIGINT")
-    private WishList wishlist;
+    @JoinColumn(name = "lista_desejo_id", nullable = false, columnDefinition = "BIGINT")
+    private ListaDesejo listaDesejo;
 }

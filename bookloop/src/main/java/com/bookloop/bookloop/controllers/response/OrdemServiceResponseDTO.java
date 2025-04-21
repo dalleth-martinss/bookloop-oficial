@@ -1,6 +1,5 @@
 package com.bookloop.bookloop.controllers.response;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,11 +9,11 @@ import java.util.List;
 
 @Setter
 @Getter
-public class OrderResponseDTO {
+public class OrdemServiceResponseDTO {
     private Long id;
     private String status;
-    private BigDecimal totalAmount;
+    private BigDecimal montanteTotal;
     private LocalDateTime createdAt;
-    private Long userId;
-    private List<Long> bookIds;
+    private Long usuarioId;
+    private List<Long> livroIds;
 }

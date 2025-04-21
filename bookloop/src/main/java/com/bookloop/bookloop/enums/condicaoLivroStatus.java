@@ -1,6 +1,6 @@
 package com.bookloop.bookloop.enums;
 
-public enum ConditionStatus {
+public enum condicaoLivroStatus {
     USADO,
     SEMINOVO,
     NOVO

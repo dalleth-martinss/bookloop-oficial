@@ -1,6 +1,5 @@
 package com.bookloop.bookloop.controllers.request;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +8,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class OrderRequestDTO {
-    private List<Long> bookId;
-    private Long userId;
-    private BigDecimal totalAmount;
+public class OrdemServicoRequestDTO {
+    private List<Long> livroId;
+    private Long usuarioId;
+    private BigDecimal montanteTotal;
 }

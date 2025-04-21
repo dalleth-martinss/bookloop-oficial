@@ -8,9 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "pagamento")
 @Data
-public class Payment {
+public class Pagamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "BIGINT")
@@ -20,7 +20,7 @@ public class Payment {
     private BigDecimal amount;
 
     @Column(name = "payment_method", length = 45, nullable = false)
-    private String paymentMethod;
+    private String metodoPagamento;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status", length = 45, nullable = false)
@@ -35,10 +35,10 @@ public class Payment {
     // Relacionamento com User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Usuario usuario;
 
     // Relacionamento com Order (um pagamento está associado a um pedido)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false, columnDefinition = "BIGINT")
-    private Order order;
+    private OrdemServico ordemServico;
 }

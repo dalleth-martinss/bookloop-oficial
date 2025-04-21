@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Setter
 @Getter
-public class BookResponseDTO {
+public class LivroResponseDTO {
     private Long id;
     private String titulo;
     private String autor;

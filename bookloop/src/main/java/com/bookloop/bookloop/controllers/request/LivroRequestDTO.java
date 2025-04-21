@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class BookRequestDTO {
+public class LivroRequestDTO {
 
     @NotBlank(message = "O título é obrigatório")
     private String titulo;

@@ -6,9 +6,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "cart_item")
+@Table(name = "carrinho_item")
 @Data
-public class CartItem {
+public class CarrinhoItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "BIGINT")
@@ -17,14 +17,14 @@ public class CartItem {
     @Column(name = "create_time", nullable = false)
     private LocalDateTime createTime;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    @Column(name = "quantidade", nullable = false)
+    private int quantidade;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", nullable = false, columnDefinition = "BIGINT")
-    private Cart cart;
+    @JoinColumn(name = "carrinho_id", nullable = false, columnDefinition = "BIGINT")
+    private Carrinho carrinho;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", nullable = false, columnDefinition = "BIGINT")
-    private Book book;
+    @JoinColumn(name = "livro_id", nullable = false, columnDefinition = "BIGINT")
+    private Livro livro;
 }
