@@ -1,13 +1,10 @@
 package com.bookloop.bookloop.controllers.request;
 
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
+
 public class LivroRequestDTO {
 
     @NotBlank(message = "O título é obrigatório")
@@ -25,5 +22,44 @@ public class LivroRequestDTO {
     @NotBlank(message = "O estado é obrigatório")
     private String estado;
 
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 }
 

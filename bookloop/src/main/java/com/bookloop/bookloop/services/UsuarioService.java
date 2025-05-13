@@ -53,36 +53,36 @@ public class UsuarioService {
 
     public UsuarioResponseDTO getUserById(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+                                           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
         return convertToResponseDTO(usuario);
     }
 
     public List<UsuarioResponseDTO> getAllUsers() {
         return usuarioRepository.findAll().stream()
-                .map(this::convertToResponseDTO)
-                .collect(Collectors.toList());
+                                .map(this::convertToResponseDTO)
+                                .collect(Collectors.toList());
     }
 
     public UsuarioResponseDTO updateUser(Long id, UsuarioRequestDTO dto) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+                                           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
         // Verificar se o email já está em uso por outro usuário
         usuarioRepository.findByEmail(dto.getEmail())
-                .ifPresent(existingUser -> {
-                    if (!existingUser.getId().equals(id)) {
-                        throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já registrado");
-                    }
-                });
+                         .ifPresent(existingUser -> {
+                            if (!existingUser.getId().equals(id)) {
+                                throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já registrado");
+                            }
+                         });
 
         // Verificar se o CPF já está em uso por outro usuário
         usuarioRepository.findByCpf(dto.getCpf())
-                .ifPresent(existingUser -> {
-                    if (!existingUser.getId().equals(id)) {
-                        throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já registrado");
-                    }
-                });
+                         .ifPresent(existingUser -> {
+                            if (!existingUser.getId().equals(id)) {
+                                throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já registrado");
+                            }
+                         });
 
         // Atualizar dados
         usuario.setCpf(dto.getCpf());
@@ -111,11 +111,11 @@ public class UsuarioService {
 
         // Verificar se o email já está em uso por outro usuário
         usuarioRepository.findByEmail(dto.getEmail())
-                .ifPresent(existingUser -> {
-                    if (!existingUser.getId().equals(id)) {
-                        throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já registrado");
-                    }
-                });
+                         .ifPresent(existingUser -> {
+                            if (!existingUser.getId().equals(id)) {
+                                throw new ResponseStatusException(HttpStatus.CONFLICT, "Email já registrado");
+                            }
+                         });
 
         // Atualizar dados (excluindo cpf)
         usuario.setNomeCompleto(dto.getNomeCompleto());
